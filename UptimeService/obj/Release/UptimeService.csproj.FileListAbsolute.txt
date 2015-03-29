@@ -1,0 +1,8 @@
+C:\Users\Jouni\documents\visual studio 2013\Projects\UptimeService\UptimeService\bin\Release\UptimeService.exe.config
+C:\Users\Jouni\documents\visual studio 2013\Projects\UptimeService\UptimeService\bin\Release\UptimeService.exe
+C:\Users\Jouni\documents\visual studio 2013\Projects\UptimeService\UptimeService\bin\Release\UptimeService.pdb
+C:\Users\Jouni\documents\visual studio 2013\Projects\UptimeService\UptimeService\obj\Release\UptimeService.ProjectInstaller.resources
+C:\Users\Jouni\documents\visual studio 2013\Projects\UptimeService\UptimeService\obj\Release\UptimeService.UptimeService.resources
+C:\Users\Jouni\documents\visual studio 2013\Projects\UptimeService\UptimeService\obj\Release\UptimeService.csproj.GenerateResource.Cache
+C:\Users\Jouni\documents\visual studio 2013\Projects\UptimeService\UptimeService\obj\Release\UptimeService.exe
+C:\Users\Jouni\documents\visual studio 2013\Projects\UptimeService\UptimeService\obj\Release\UptimeService.pdb
