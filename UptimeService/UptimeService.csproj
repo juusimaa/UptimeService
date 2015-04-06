@@ -51,6 +51,7 @@
     <Compile Include="ProjectInstaller.Designer.cs">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
+    <Compile Include="StringStream.cs" />
     <Compile Include="Uptime.cs" />
     <Compile Include="UptimeService.cs">
       <SubType>Component</SubType>

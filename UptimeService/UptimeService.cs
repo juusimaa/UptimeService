@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
@@ -41,12 +42,16 @@ namespace UptimeService
         };
 
         private const int TIMER_INTERVALL = 60000;
+        private readonly BackgroundWorker _pipeServerWorker;
 
         public UptimeService()
         {
             InitializeComponent();
 
             UptimeServiceSettings.Default.Reload();
+
+            _pipeServerWorker = new BackgroundWorker();
+            _pipeServerWorker.DoWork += _pipeServerWorker_DoWork;
 
             AutoLog = false;
     
@@ -58,6 +63,20 @@ namespace UptimeService
             }
             eventLog.Source = "UptimeSource";
             eventLog.Log = "UptimeLog";
+        }
+
+        void _pipeServerWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var pipeServer = new NamedPipeServerStream("uptimepipe", PipeDirection.Out, 2);
+            pipeServer.WaitForConnection();
+
+            var stream = new StreamString(pipeServer);
+
+            var t = CheckUptime();
+            var message = "Current uptime: " + t.GetFormattedUptime() +
+                "\nRecord uptime: " + UptimeServiceSettings.Default.MaxUptime.GetFormattedUptime();
+
+            stream.WriteString(message);
         }
 
         protected override void OnStart(string[] args)
@@ -102,7 +121,7 @@ namespace UptimeService
             base.OnContinue();
         }
 
-        public void OnTimer(object sender, System.Timers.ElapsedEventArgs args)
+        private TimeSpan CheckUptime()
         {
             var record = UptimeServiceSettings.Default.MaxUptime;
             var t = Uptime.GetUptime2();
@@ -114,8 +133,14 @@ namespace UptimeService
                 record = t;
             }
 
-            eventLog.WriteEntry("Current uptime: " + t.GetFormattedUptime() + "\nRecord uptime: " + record.GetFormattedUptime(),
-                EventLogEntryType.Information, 0);
+            return t;
+        }
+
+        public void OnTimer(object sender, System.Timers.ElapsedEventArgs args)
+        {
+            var t = CheckUptime();
+            eventLog.WriteEntry("Current uptime: " + t.GetFormattedUptime() + 
+                "\nRecord uptime: " + UptimeServiceSettings.Default.MaxUptime.GetFormattedUptime());
         }
     }
 }
