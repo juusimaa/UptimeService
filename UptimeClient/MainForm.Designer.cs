@@ -60,8 +60,10 @@
             this.textBox.Location = new System.Drawing.Point(3, 3);
             this.textBox.Multiline = true;
             this.textBox.Name = "textBox";
+            this.textBox.ReadOnly = true;
             this.textBox.Size = new System.Drawing.Size(516, 104);
             this.textBox.TabIndex = 1;
+            this.textBox.TabStop = false;
             // 
             // notifyIcon
             // 
@@ -84,6 +86,7 @@
             this.ClientSize = new System.Drawing.Size(522, 143);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Uptime client";

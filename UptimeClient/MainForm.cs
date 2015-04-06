@@ -49,7 +49,7 @@ namespace UptimeClient
             {
                 notifyIcon.Visible = true;
                 notifyIcon.BalloonTipTitle = "Uptime client";
-                notifyIcon.BalloonTipText = "Uptime client is running.";
+                notifyIcon.BalloonTipText = "Uptime client is still running.";
                 notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
                 notifyIcon.ShowBalloonTip(500);
                 Hide();
@@ -63,7 +63,8 @@ namespace UptimeClient
 
         private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
         {
-            notifyIcon.Text = _currentUptime;
+            Show();
+            WindowState = FormWindowState.Normal;
         }
 
         private void notifyIcon_DoubleClick(object sender, EventArgs e)
