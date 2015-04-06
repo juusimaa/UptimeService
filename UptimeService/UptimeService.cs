@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Common;
+using System;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO.Pipes;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UptimeService
 {
@@ -43,6 +37,7 @@ namespace UptimeService
 
         private const int TIMER_INTERVALL = 60000;
         private readonly BackgroundWorker _pipeServerWorker;
+        private bool _terminate = false;
 
         public UptimeService()
         {
@@ -52,6 +47,7 @@ namespace UptimeService
 
             _pipeServerWorker = new BackgroundWorker();
             _pipeServerWorker.DoWork += _pipeServerWorker_DoWork;
+            _pipeServerWorker.RunWorkerAsync();
 
             AutoLog = false;
     
@@ -67,16 +63,23 @@ namespace UptimeService
 
         void _pipeServerWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var pipeServer = new NamedPipeServerStream("uptimepipe", PipeDirection.Out, 2);
-            pipeServer.WaitForConnection();
+            while (!_terminate)
+            {
+                var pipeServer = new NamedPipeServerStream("uptimepipe", PipeDirection.Out, 2); 
 
-            var stream = new StreamString(pipeServer);
+                eventLog.WriteEntry("Waiting for the connections.");
+                pipeServer.WaitForConnection();
 
-            var t = CheckUptime();
-            var message = "Current uptime: " + t.GetFormattedUptime() +
-                "\nRecord uptime: " + UptimeServiceSettings.Default.MaxUptime.GetFormattedUptime();
+                eventLog.WriteEntry("Client connected.");
+                var stream = new StreamString(pipeServer);
 
-            stream.WriteString(message);
+                var t = CheckUptime();
+                var message = "Current uptime: " + t.GetFormattedUptime() + Environment.NewLine +
+                    "Record uptime: " + UptimeServiceSettings.Default.MaxUptime.GetFormattedUptime();
+
+                stream.WriteString(message);
+                pipeServer.Close();
+            }            
         }
 
         protected override void OnStart(string[] args)
@@ -109,6 +112,7 @@ namespace UptimeService
             //SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
             eventLog.WriteEntry("Updatime service stopped.");
+            _terminate = true;
 
             // Update the service state to Stopped.
             //serviceStatus.dwCurrentState = ServiceState.SERVICE_RUNNING;

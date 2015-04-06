@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace UptimeService
+namespace Common
 {
     public class StreamString
     {
