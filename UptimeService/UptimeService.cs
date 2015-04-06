@@ -67,10 +67,8 @@ namespace UptimeService
             {
                 var pipeServer = new NamedPipeServerStream("uptimepipe", PipeDirection.Out, 2); 
 
-                eventLog.WriteEntry("Waiting for the connections.");
                 pipeServer.WaitForConnection();
 
-                eventLog.WriteEntry("Client connected.");
                 var stream = new StreamString(pipeServer);
 
                 var t = CheckUptime();
