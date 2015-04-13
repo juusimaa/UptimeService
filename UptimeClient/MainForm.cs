@@ -9,6 +9,8 @@ namespace UptimeClient
     public partial class MainForm : Form
     {
         private string _currentUptime;
+        private bool _exiting;
+        private bool _minimized;
 
         public MainForm()
         {
@@ -51,7 +53,13 @@ namespace UptimeClient
                 notifyIcon.BalloonTipTitle = "Uptime client";
                 notifyIcon.BalloonTipText = "Uptime client is still running.";
                 notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
-                notifyIcon.ShowBalloonTip(500);
+
+                if (!_minimized)
+                {
+                    _minimized = true;
+                    notifyIcon.ShowBalloonTip(500);
+                }
+                notifyIcon.ContextMenuStrip = contextMenuStrip;
                 Hide();
             }
 
@@ -59,12 +67,6 @@ namespace UptimeClient
             {
                 notifyIcon.Visible = false;
             }
-        }
-
-        private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
-        {
-            Show();
-            WindowState = FormWindowState.Normal;
         }
 
         private void notifyIcon_DoubleClick(object sender, EventArgs e)
@@ -77,6 +79,31 @@ namespace UptimeClient
         {
             textBox.Text = GetUptime();
             notifyIcon.Text = _currentUptime;
+        }
+
+        private void restoreMenuItem_Click(object sender, EventArgs e)
+        {
+            Show();
+            WindowState = FormWindowState.Normal;
+        }
+
+        private void exitMenuItem_Click(object sender, EventArgs e)
+        {
+            _exiting = true;
+            Close();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_exiting) return;
+            WindowState = FormWindowState.Minimized;
+            e.Cancel = true;
+        }
+
+        private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
+        {
+            Show();
+            WindowState = FormWindowState.Normal;
         }
     }
 }
