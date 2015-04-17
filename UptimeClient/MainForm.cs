@@ -100,7 +100,7 @@ namespace UptimeClient
             e.Cancel = true;
         }
 
-        private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Show();
             WindowState = FormWindowState.Normal;
